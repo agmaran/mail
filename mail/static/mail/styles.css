@@ -1,3 +1,20 @@
 textarea {
     min-height: 400px;
 }
+
+.email {
+    border: 0.1rem;
+    border-color: lightgray;
+    border-style: solid;
+    height: 2rem;
+    border-radius: 4px;
+}
+
+.sender {
+    font-weight: bold;
+}
+
+.timestamp {
+    text-align: right;
+    color: lightgray;
+}
