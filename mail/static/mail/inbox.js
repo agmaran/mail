@@ -37,6 +37,37 @@ function load_mailbox(mailbox) {
 
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+
+  // Load appropriate mailbox
+  fetch(`/emails/${mailbox}`)
+    .then(response => response.json())
+    .then(emails => {
+      emails.forEach(email => {
+        const mail = document.createElement('div');
+        mail.className = 'email';
+        mail.className += ' row';
+        if (email.read === true) {
+          mail.style.backgroundColor = 'gray';
+        } else {
+          mail.style.backgroundColor = 'white';
+        }
+        document.querySelector('#emails-view').append(mail);
+        const sender = document.createElement('div');
+        sender.className = 'col-3';
+        sender.className += ' sender';
+        sender.innerHTML = email.sender;
+        mail.append(sender);
+        const subject = document.createElement('div');
+        subject.className = 'col-6';
+        subject.innerHTML = email.subject;
+        mail.append(subject);
+        const timestamp = document.createElement('div');
+        timestamp.className = 'col-3';
+        timestamp.className += ' timestamp';
+        timestamp.innerHTML = email.timestamp;
+        mail.append(timestamp);
+      })
+    })
 }
 
 function send_mail(event) {
