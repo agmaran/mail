@@ -18,6 +18,7 @@ function compose_email() {
 
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
+  document.querySelector('#email').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
 
   // Clear out composition fields
@@ -32,8 +33,9 @@ function compose_email() {
 function load_mailbox(mailbox) {
 
   // Show the mailbox and hide other views
-  document.querySelector('#emails-view').style.display = 'block';
   document.querySelector('#compose-view').style.display = 'none';
+  document.querySelector('#email').style.display = 'none';
+  document.querySelector('#emails-view').style.display = 'block';
 
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
@@ -46,6 +48,7 @@ function load_mailbox(mailbox) {
         const mail = document.createElement('div');
         mail.className = 'email';
         mail.className += ' row';
+        mail.addEventListener('click', function () { view_email(email.id) });
         if (email.read === true) {
           mail.style.backgroundColor = 'gray';
         } else {
@@ -54,7 +57,7 @@ function load_mailbox(mailbox) {
         document.querySelector('#emails-view').append(mail);
         const sender = document.createElement('div');
         sender.className = 'col-3';
-        sender.className += ' sender';
+        sender.className += ' bold';
         sender.innerHTML = email.sender;
         mail.append(sender);
         const subject = document.createElement('div');
@@ -94,6 +97,35 @@ function send_mail(event) {
         load_mailbox('sent');
       }
     })
+}
+
+function view_email(email_id) {
+  //Get request to /emails/<email_id>
+  fetch(`/emails/${email_id}`)
+    .then(response => response.json())
+    .then(email => {
+      document.querySelector('#from').innerHTML = email.sender;
+      document.querySelector('#to').innerHTML = email.recipients;
+      document.querySelector('#subject').innerHTML = email.subject;
+      document.querySelector('#time').innerHTML = email.timestamp;
+      document.querySelector('#body').innerHTML = email.body;
+    })
+
+  //Hide emails view and show email view
+  document.querySelector('#emails-view').style.display = 'none';
+  document.querySelector('#compose-view').style.display = 'none';
+  document.querySelector('#email').style.display = 'block';
+
+  mark_read(email_id);
+}
+
+function mark_read(email_id) {
+  fetch(`/emails/${email_id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      read: true
+    })
+  })
 }
 
 
