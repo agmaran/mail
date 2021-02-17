@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
   document.querySelector('#inbox').addEventListener('click', () => load_mailbox('inbox'));
   document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
-  document.querySelector('#compose').addEventListener('click', compose_email);
+  document.querySelector('#compose').addEventListener('click', () => compose_email(false));
 
   // Send mail
 
@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
   load_mailbox('inbox');
 });
 
-function compose_email() {
+function compose_email(reply) {
 
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
@@ -24,10 +24,11 @@ function compose_email() {
   document.querySelector('#compose-view').style.display = 'block';
 
   // Clear out composition fields
-  document.querySelector('#compose-recipients').value = '';
-  document.querySelector('#compose-subject').value = '';
-  document.querySelector('#compose-body').value = '';
-
+  if (reply === false) {
+    document.querySelector('#compose-recipients').value = '';
+    document.querySelector('#compose-subject').value = '';
+    document.querySelector('#compose-body').value = '';
+  }
   // Hide error message div
   document.querySelector('#error').style.display = 'none';
 }
@@ -127,6 +128,20 @@ function view_email(email_id, mailbox) {
       mail.append(subject);
       mail.append(time);
       if (mailbox !== 'sent') {
+        const rep = document.createElement('button');
+        rep.classList = 'btn btn-sm btn-outline-primary';
+        rep.innerHTML = 'Reply';
+        rep.addEventListener('click', () => {
+          document.querySelector('#compose-recipients').value = email.sender;
+          if (email.subject.startsWith("Re:")) {
+            document.querySelector('#compose-subject').value = email.subject;
+          } else {
+            document.querySelector('#compose-subject').value = `Re: ${email.subject}`;
+          }
+          document.querySelector('#compose-body').value = `On ${email.timestamp} ${email.sender} wrote: ${email.body}`;
+          compose_email(true);
+        });
+        mail.append(rep);
         if (email.archived === true) {
           const unar = document.createElement('button');
           unar.classList = 'btn btn-sm btn-outline-primary';
