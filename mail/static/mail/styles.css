@@ -10,6 +10,10 @@ textarea {
     border-radius: 4px;
 }
 
+.email:hover {
+    height: 3rem;
+}
+
 .bold {
     font-weight: bold;
 }
@@ -17,4 +21,12 @@ textarea {
 .timestamp {
     text-align: right;
     color: lightgray;
+}
+
+.cursor {
+    cursor: pointer;
+}
+
+.margin {
+    margin: auto;
 }

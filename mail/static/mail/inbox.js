@@ -34,7 +34,7 @@ function compose_email(reply) {
 }
 
 function load_mailbox(mailbox) {
-  document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+  document.querySelector('#emails-view').innerHTML = `<h3 class = "mb-2">${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
   document.querySelector('#compose-view').style.display = 'none';
   document.querySelector('#email').style.display = 'none';
   document.querySelector('#emails-view').style.display = 'block';
@@ -44,8 +44,7 @@ function load_mailbox(mailbox) {
     .then(emails => {
       emails.forEach(email => {
         const mail = document.createElement('div');
-        mail.className = 'email';
-        mail.className += ' row';
+        mail.classList = 'email row cursor';
         mail.addEventListener('click', function () { view_email(email.id, mailbox) });
         if (email.read === true) {
           mail.style.backgroundColor = 'gray';
@@ -54,17 +53,15 @@ function load_mailbox(mailbox) {
         }
         document.querySelector('#emails-view').append(mail);
         const sender = document.createElement('div');
-        sender.className = 'col-3';
-        sender.className += ' bold';
+        sender.classList = 'col-3 bold cursor margin';
         sender.innerHTML = email.sender;
         mail.append(sender);
         const subject = document.createElement('div');
-        subject.className = 'col-6';
+        subject.className = 'col-6 cursor margin';
         subject.innerHTML = email.subject;
         mail.append(subject);
         const timestamp = document.createElement('div');
-        timestamp.className = 'col-3';
-        timestamp.className += ' timestamp';
+        timestamp.classList = 'col-3 timestamp cursor margin';
         timestamp.innerHTML = email.timestamp;
         mail.append(timestamp);
       })
@@ -117,6 +114,9 @@ function view_email(email_id, mailbox) {
       const subject = document.createElement('div');
       const time = document.createElement('div');
       const body = document.createElement('div');
+
+      time.classList = 'mb-2';
+
       from.innerHTML = `<strong>From: </strong> ${email.sender}`;
       to.innerHTML = `<strong>To: </strong> ${email.recipients}`;
       subject.innerHTML = `<strong>Subject: </strong> ${email.subject}`;
@@ -138,19 +138,19 @@ function view_email(email_id, mailbox) {
           } else {
             document.querySelector('#compose-subject').value = `Re: ${email.subject}`;
           }
-          document.querySelector('#compose-body').value = `On ${email.timestamp} ${email.sender} wrote: ${email.body}`;
+          document.querySelector('#compose-body').value = `On ${email.timestamp} ${email.sender} wrote: "${email.body}"`;
           compose_email(true);
         });
         mail.append(rep);
         if (email.archived === true) {
           const unar = document.createElement('button');
-          unar.classList = 'btn btn-sm btn-outline-primary';
+          unar.classList = 'btn btn-sm btn-outline-primary ml-2';
           unar.innerHTML = 'Unarchive';
           unar.addEventListener('click', (event) => unarchive(email.id, event));
           mail.append(unar);
         } else {
           const ar = document.createElement('button');
-          ar.classList = 'btn btn-sm btn-outline-primary';
+          ar.classList = 'btn btn-sm btn-outline-primary ml-2';
           ar.innerHTML = 'Archive';
           ar.addEventListener('click', (event) => archive(email.id, event));
           mail.append(ar);
